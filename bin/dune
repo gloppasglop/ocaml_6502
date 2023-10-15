@@ -1,0 +1,5 @@
+(executable
+ (public_name ocaml_sdl)
+ (name main)
+ (modules main cpu)
+ (libraries stdio base ocaml_sdl))
