@@ -181,6 +181,8 @@ let opcode_to_inst opcode =
   | 0x25 -> { mnemonic = AND; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0x24 -> { mnemonic = BIT; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0xC5 -> { mnemonic = CMP; addressing = Zeropage; bytes = 2; cycles = 3 }
+  | 0xE4 -> { mnemonic = CPX; addressing = Zeropage; bytes = 2; cycles = 3 }
+  | 0xC4 -> { mnemonic = CPY; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0x45 -> { mnemonic = EOR; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0xA5 -> { mnemonic = LDA; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0xA6 -> { mnemonic = LDX; addressing = Zeropage; bytes = 2; cycles = 3 }
@@ -188,12 +190,57 @@ let opcode_to_inst opcode =
   | 0x05 -> { mnemonic = ORA; addressing = Zeropage; bytes = 2; cycles = 3 }
   | 0xE5 -> { mnemonic = SBC; addressing = Zeropage; bytes = 2; cycles = 3 }
   (* Zeropage Read-Modify-Write instructions *)
-  | 0x06 -> { mnemonic = ASL; addressing = Absolute; bytes = 2; cycles = 5 }
-  | 0xC6 -> { mnemonic = DEC; addressing = Absolute; bytes = 2; cycles = 5 }
-  | 0xE6 -> { mnemonic = INC; addressing = Absolute; bytes = 2; cycles = 5 }
-  | 0x46 -> { mnemonic = LSR; addressing = Absolute; bytes = 2; cycles = 5 }
-  | 0x26 -> { mnemonic = ROL; addressing = Absolute; bytes = 2; cycles = 5 }
-  | 0x66 -> { mnemonic = ROR; addressing = Absolute; bytes = 2; cycles = 5 }
+  | 0x06 -> { mnemonic = ASL; addressing = Zeropage; bytes = 2; cycles = 5 }
+  | 0xC6 -> { mnemonic = DEC; addressing = Zeropage; bytes = 2; cycles = 5 }
+  | 0xE6 -> { mnemonic = INC; addressing = Zeropage; bytes = 2; cycles = 5 }
+  | 0x46 -> { mnemonic = LSR; addressing = Zeropage; bytes = 2; cycles = 5 }
+  | 0x26 -> { mnemonic = ROL; addressing = Zeropage; bytes = 2; cycles = 5 }
+  | 0x66 -> { mnemonic = ROR; addressing = Zeropage; bytes = 2; cycles = 5 }
+  (* Zeropage Write instructions*)
+  | 0x85 -> { mnemonic = STA; addressing = Zeropage; bytes = 2; cycles = 3 }
+  | 0x86 -> { mnemonic = STX; addressing = Zeropage; bytes = 2; cycles = 3 }
+  | 0x84 -> { mnemonic = STY; addressing = Zeropage; bytes = 2; cycles = 3 }
+  (* AbsoluteX*)
+  (* AbsoluteX Read*)
+  | 0x7D -> { mnemonic = ADC; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0x3D -> { mnemonic = AND; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0xDD -> { mnemonic = CMP; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0x5D -> { mnemonic = EOR; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0xBD -> { mnemonic = LDA; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0xBC -> { mnemonic = LDY; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0x1D -> { mnemonic = ORA; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  | 0xFD -> { mnemonic = SBC; addressing = AbsoluteX; bytes = 3; cycles = 4 }
+  (* AbsoluteX Read-Modify-Write instructions *)
+  | 0x1E -> { mnemonic = ASL; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  | 0xDE -> { mnemonic = DEC; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  | 0xFE -> { mnemonic = INC; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  | 0x5E -> { mnemonic = LSR; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  | 0x3E -> { mnemonic = ROL; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  | 0x7E -> { mnemonic = ROR; addressing = AbsoluteX; bytes = 3; cycles = 7 }
+  (* AbsoluteX Write instructions*)
+  | 0x9D -> { mnemonic = STA; addressing = AbsoluteX; bytes = 3; cycles = 5 }
+  (* AbsoluteY*)
+  (* AbsoluteY Read*)
+  | 0x79 -> { mnemonic = ADC; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0x39 -> { mnemonic = AND; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0xD9 -> { mnemonic = CMP; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0x59 -> { mnemonic = EOR; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0xB9 -> { mnemonic = LDA; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0xBE -> { mnemonic = LDX; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0x19 -> { mnemonic = ORA; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  | 0xF9 -> { mnemonic = SBC; addressing = AbsoluteY; bytes = 3; cycles = 4 }
+  (* AbsoluteY Read-Modify-Write instructions *)
+  (* AbsoluteY Write instructions*)
+  | 0x99 -> { mnemonic = STA; addressing = AbsoluteY; bytes = 3; cycles = 5 }
+  (* Relative *)
+  | 0x90 -> { mnemonic = BCC; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0xB0 -> { mnemonic = BCS; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0xF0 -> { mnemonic = BEQ; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0x30 -> { mnemonic = BMI; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0xD0 -> { mnemonic = BNE; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0x10 -> { mnemonic = BPL; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0x50 -> { mnemonic = BVC; addressing = Relative; bytes = 2; cycles = 2 }
+  | 0x70 -> { mnemonic = BVS; addressing = Relative; bytes = 2; cycles = 2 }
   | _ -> failwith (Printf.sprintf "Opcode %02X Unimplemented" opcode)
 ;;
 
@@ -614,10 +661,28 @@ let execute inst cycle cpu pins bus =
        , { pins with rw = true }
        , { bus with address = cpu.pc + 1 } )
      | 1 ->
-       ( next_cycle
-       , { cpu with pc = cpu.pc + 1 }
-       , { pins with rw = true }
-       , { bus with address = bus.data } )
+       (match inst.mnemonic with
+        | STA ->
+          Printf.printf "ZP %04x \n" bus.data;
+          ( next_cycle
+          , { cpu with pc = cpu.pc + 1 }
+          , { pins with rw = false }
+          , { address = bus.data; data = cpu.a } )
+        | STX ->
+          ( next_cycle
+          , { cpu with pc = cpu.pc + 1 }
+          , { pins with rw = false }
+          , { address = bus.data; data = cpu.x } )
+        | STY ->
+          ( next_cycle
+          , { cpu with pc = cpu.pc + 1 }
+          , { pins with rw = false }
+          , { address = bus.data; data = cpu.y } )
+        | _ ->
+          ( next_cycle
+          , { cpu with pc = cpu.pc + 1 }
+          , { pins with rw = true }
+          , { bus with address = bus.data } ))
      | 2 ->
        (match inst.mnemonic with
         (* Read instructions *)
@@ -642,6 +707,18 @@ let execute inst cycle cpu pins bus =
           , { bus with address = cpu.pc } )
         | CMP ->
           let sr = inst_cmp cpu.a bus.data cpu.sr in
+          ( 0
+          , { cpu with sr }
+          , { pins with rw = true; sync = true }
+          , { bus with address = cpu.pc } )
+        | CPX ->
+          let sr = inst_cmp cpu.x bus.data cpu.sr in
+          ( 0
+          , { cpu with sr }
+          , { pins with rw = true; sync = true }
+          , { bus with address = cpu.pc } )
+        | CPY ->
+          let sr = inst_cmp cpu.y bus.data cpu.sr in
           ( 0
           , { cpu with sr }
           , { pins with rw = true; sync = true }
@@ -686,7 +763,390 @@ let execute inst cycle cpu pins bus =
           , { cpu with a; sr }
           , { pins with rw = true; sync = true }
           , { bus with address = cpu.pc } )
+        | ASL | DEC | INC | LSR | ROL | ROR ->
+          Printf.printf "ZP %02X \n" bus.data;
+          next_cycle, { cpu with tmp_data = bus.data }, { pins with rw = false }, bus
+        | STA | STX | STY ->
+          0, cpu, { pins with rw = true; sync = true }, { bus with address = cpu.pc }
         | _ -> failwith "Invalid Zeropage opcode")
+     | 3 ->
+       (match inst.mnemonic with
+        | ASL ->
+          let r, sr = inst_asl cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | DEC ->
+          let r = 0xFF land (cpu.tmp_data - 1) in
+          let sr = set_nz r cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | INC ->
+          let r = 0xFF land (cpu.tmp_data + 1) in
+          let sr = set_nz r cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | LSR ->
+          let r, sr = inst_lsr cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | ROL ->
+          let r, sr = inst_rol cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | ROR ->
+          let r, sr = inst_ror cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | _ -> failwith "Cycle 4 Absolute not implemented")
+     | 4 ->
+       (match inst.mnemonic with
+        | ASL | DEC | INC | LSR | ROL | ROR ->
+          0, cpu, { pins with rw = true; sync = true }, { bus with address = cpu.pc }
+        | _ -> failwith "Cycle 5 Absolute not implemented")
+     | _ -> failwith "op cycle too large")
+  (* AbxoluteX*)
+  | AbsoluteX ->
+    let next_cycle = cycle + 1 in
+    (match cycle with
+     | 0 ->
+       ( next_cycle
+       , { cpu with pc = cpu.pc + 1 }
+       , { pins with rw = true }
+       , { bus with address = cpu.pc + 1 } )
+     | 1 ->
+       ( next_cycle
+       , { cpu with adl = bus.data; pc = cpu.pc + 1 }
+       , { pins with rw = true }
+       , { bus with address = cpu.pc + 1 } )
+     | 2 ->
+       ( next_cycle
+       , { cpu with
+           adh = bus.data + (((cpu.adl + cpu.x) land 0x100) lsr 8)
+         ; adl = (cpu.adl + cpu.x) land 0xFF
+         ; pc = cpu.pc + 1
+         }
+       , { pins with rw = true }
+       , { bus with address = (bus.data lsl 8) + ((cpu.adl + cpu.x) land 0xFF) } )
+     | 3 ->
+       (* check if we crossed page boundary *)
+       (* In that case the MSB of address does not match the real MSB of address*)
+       (* Only for read instruction *)
+       let sync =
+         match inst.mnemonic with
+         | STA | ASL | DEC | INC | LSR | ROL | ROR -> false
+         | _ -> if (bus.address land 0xFF00) lsr 8 = cpu.adh then true else false
+       in
+       let address = if sync then cpu.pc else (cpu.adh lsl 8) + cpu.adl in
+       let rw =
+         match inst.mnemonic with
+         | STA -> false
+         | _ -> true
+       in
+       let next_cycle = if sync then 0 else next_cycle in
+       (match inst.mnemonic with
+        (* Read instructions *)
+        | ADC ->
+          let a, sr = inst_adc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | AND ->
+          let a, sr = inst_and cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | CMP ->
+          let sr = inst_cmp cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw; sync }, { bus with address }
+        | EOR ->
+          let a, sr = inst_eor cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDA ->
+          let a = bus.data in
+          let sr = set_nz a cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDY ->
+          let y = bus.data in
+          let sr = set_nz y cpu.sr in
+          next_cycle, { cpu with y; sr }, { pins with rw; sync }, { bus with address }
+        | ORA ->
+          let a, sr = inst_ora cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | SBC ->
+          let a, sr = inst_sbc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        (* TODO Check if correcr*)
+        | STA -> next_cycle, cpu, { pins with rw; sync }, { address; data = cpu.a }
+        | ASL | DEC | INC | LSR | ROL | ROR ->
+          ( next_cycle
+          , { cpu with tmp_data = bus.data }
+          , { pins with rw }
+          , { bus with address } )
+        | _ -> failwith "Cycle 4 AbsoluteX Not implemented")
+     | 4 ->
+       let sync =
+         match inst.mnemonic with
+         | ASL | DEC | INC | LSR | ROL | ROR -> false
+         | _ -> true
+       in
+       let address =
+         match inst.mnemonic with
+         | ASL | DEC | INC | LSR | ROL | ROR -> (cpu.adh lsl 8) + cpu.adl
+         | _ -> cpu.pc
+       in
+       let rw =
+         match inst.mnemonic with
+         | ASL | DEC | INC | LSR | ROL | ROR -> false
+         | _ -> true
+       in
+       let next_cycle = if sync then 0 else next_cycle in
+       (match inst.mnemonic with
+        (* Read instructions *)
+        | ADC ->
+          let a, sr = inst_adc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | AND ->
+          let a, sr = inst_and cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | CMP ->
+          let sr = inst_cmp cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw; sync }, { bus with address }
+        | EOR ->
+          let a, sr = inst_eor cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDA ->
+          let a = bus.data in
+          let sr = set_nz a cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDY ->
+          let y = bus.data in
+          let sr = set_nz y cpu.sr in
+          next_cycle, { cpu with y; sr }, { pins with rw; sync }, { bus with address }
+        | ORA ->
+          let a, sr = inst_ora cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | SBC ->
+          let a, sr = inst_sbc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        (* TODO Check if correcr*)
+        | STA -> next_cycle, cpu, { pins with rw; sync }, { address; data = cpu.a }
+        | ASL | DEC | INC | LSR | ROL | ROR ->
+          ( next_cycle
+          , { cpu with tmp_data = bus.data }
+          , { pins with rw; sync }
+          , { bus with address } )
+        | _ -> failwith "Cycle 4 AbsoluteX Not implemented")
+     | 5 ->
+       (match inst.mnemonic with
+        | ASL ->
+          let r, sr = inst_asl cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | DEC ->
+          let r = 0xFF land (cpu.tmp_data - 1) in
+          let sr = set_nz r cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | INC ->
+          let r = 0xFF land (cpu.tmp_data + 1) in
+          let sr = set_nz r cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | LSR ->
+          let r, sr = inst_lsr cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | ROL ->
+          let r, sr = inst_rol cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | ROR ->
+          let r, sr = inst_ror cpu.tmp_data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw = false }, { bus with data = r }
+        | _ -> failwith "Cycle 5 AbsoluteX not implemented")
+     | 6 ->
+       (match inst.mnemonic with
+        | ASL | DEC | INC | LSR | ROL | ROR ->
+          0, cpu, { pins with rw = true; sync = true }, { bus with address = cpu.pc }
+        | _ -> failwith "Cycle 6 Absolute not implemented")
+     | _ -> failwith "op cycle too large")
+  (* AbsoluteY*)
+  | AbsoluteY ->
+    let next_cycle = cycle + 1 in
+    (match cycle with
+     | 0 ->
+       ( next_cycle
+       , { cpu with pc = cpu.pc + 1 }
+       , { pins with rw = true }
+       , { bus with address = cpu.pc + 1 } )
+     | 1 ->
+       ( next_cycle
+       , { cpu with adl = bus.data; pc = cpu.pc + 1 }
+       , { pins with rw = true }
+       , { bus with address = cpu.pc + 1 } )
+     | 2 ->
+       ( next_cycle
+       , { cpu with
+           adh = bus.data + (((cpu.adl + cpu.y) land 0x100) lsr 8)
+         ; adl = (cpu.adl + cpu.y) land 0xFF
+         ; pc = cpu.pc + 1
+         }
+       , { pins with rw = true }
+       , { bus with address = (bus.data lsl 8) + ((cpu.adl + cpu.y) land 0xFF) } )
+     | 3 ->
+       (* check if we crossed page boundary *)
+       (* In that case the MSB of address does not match the real MSB of address*)
+       (* Only for read instruction *)
+       let sync =
+         match inst.mnemonic with
+         | STA -> false
+         | _ -> if (bus.address land 0xFF00) lsr 8 = cpu.adh then true else false
+       in
+       let address = if sync then cpu.pc else (cpu.adh lsl 8) + cpu.adl in
+       let rw =
+         match inst.mnemonic with
+         | STA -> false
+         | _ -> true
+       in
+       let next_cycle = if sync then 0 else next_cycle in
+       (match inst.mnemonic with
+        (* Read instructions *)
+        | ADC ->
+          let a, sr = inst_adc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | AND ->
+          let a, sr = inst_and cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | CMP ->
+          let sr = inst_cmp cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw; sync }, { bus with address }
+        | EOR ->
+          let a, sr = inst_eor cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDA ->
+          let a = bus.data in
+          let sr = set_nz a cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDX ->
+          let x = bus.data in
+          let sr = set_nz x cpu.sr in
+          next_cycle, { cpu with x; sr }, { pins with rw; sync }, { bus with address }
+        | ORA ->
+          let a, sr = inst_ora cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | SBC ->
+          let a, sr = inst_sbc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        (* TODO Check if correcr*)
+        | STA -> next_cycle, cpu, { pins with rw; sync }, { address; data = cpu.a }
+        | _ -> failwith "Cycle 4 AbsoluteX Not implemented")
+     | 4 ->
+       let sync = true in
+       let address = cpu.pc in
+       let rw = true in
+       let next_cycle = 0 in
+       (match inst.mnemonic with
+        (* Read instructions *)
+        | ADC ->
+          let a, sr = inst_adc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | AND ->
+          let a, sr = inst_and cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | CMP ->
+          let sr = inst_cmp cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with sr }, { pins with rw; sync }, { bus with address }
+        | EOR ->
+          let a, sr = inst_eor cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDA ->
+          let a = bus.data in
+          let sr = set_nz a cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | LDX ->
+          let x = bus.data in
+          let sr = set_nz x cpu.sr in
+          next_cycle, { cpu with x; sr }, { pins with rw; sync }, { bus with address }
+        | ORA ->
+          let a, sr = inst_ora cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        | SBC ->
+          let a, sr = inst_sbc cpu.a bus.data cpu.sr in
+          next_cycle, { cpu with a; sr }, { pins with rw; sync }, { bus with address }
+        (* TODO Check if correcr*)
+        | STA -> next_cycle, cpu, { pins with rw; sync }, { address; data = cpu.a }
+        | _ -> failwith "Cycle 4 AbsoluteX Not implemented")
+     | _ -> failwith "op cycle too large")
+  (* Relative*)
+  | Relative ->
+    let next_cycle = cycle + 1 in
+    let rw = true in
+    Printf.printf "Cycle %d : data= %02X\n" cycle bus.data;
+    (match cycle with
+     | 0 ->
+       ( next_cycle
+       , { cpu with pc = cpu.pc + 1 }
+       , { pins with rw }
+       , { bus with address = cpu.pc + 1 } )
+     | 1 ->
+       (* TODO: checp pc logic*)
+       let pc = cpu.pc + 1 in
+       ( next_cycle
+       , { cpu with pc; tmp_data = bus.data }
+       , { pins with rw; sync = false }
+       , { bus with address = pc } )
+     | 2 ->
+       let branch_taken =
+         match inst.mnemonic with
+         | BCC -> not (cpu.sr land 0b0000_0001 = 0b0000_0001)
+         | BCS -> cpu.sr land 0b0000_0001 = 0b0000_0001
+         | BEQ -> cpu.sr land 0b0000_0010 = 0b0000_0010
+         | BNE -> not (cpu.sr land 0b0000_0010 = 0b0000_0010)
+         | BMI -> cpu.sr land 0b1000_0000 = 0b1000_0000
+         | BPL -> not (cpu.sr land 0b1000_0000 = 0b1000_0000)
+         | BVC -> not (cpu.sr land 0b0100_0000 = 0b0100_0000)
+         | BVS -> cpu.sr land 0b0100_0000 = 0b0100_0000
+         | _ -> failwith "Not implemented"
+       in
+       let offset =
+         if branch_taken
+         then
+           if cpu.tmp_data land 0b1000_0000 = 0b1000_0000
+           then cpu.tmp_data - 256 - 1
+           else cpu.tmp_data - 1
+         else 0
+       in
+       let pc = if branch_taken then cpu.pc else cpu.pc in
+       let next_cycle = if branch_taken then next_cycle else 0 in
+       let sync = if branch_taken then false else true in
+       Printf.printf
+         "Branch taken next_cycle=%d %b cpu.pc=%04X - data=%02X adh %x adl %x offset %d\n"
+         next_cycle
+         branch_taken
+         pc
+         bus.data
+         ((cpu.pc land 0xFF00) lsr 8)
+         ((cpu.pc land 0xFF) + offset)
+         offset;
+       ( next_cycle
+       , { cpu with pc; adh = (pc land 0xFF00) lsr 8; adl = (pc land 0xFF) + offset }
+       , { pins with rw; sync }
+       , { bus with address = pc } )
+     | 3 ->
+       let rw = true in
+       let page_crossed = cpu.adl < 0 || cpu.adl > 255 in
+       let sync = not page_crossed in
+       let next_cycle = if page_crossed then next_cycle else 0 in
+       let pc =
+         if page_crossed
+         then
+           if cpu.adl < 0
+           then ((cpu.adh - 1) lsl 8) lor (256 + cpu.adl)
+           else ((cpu.adh + 1) lsl 8) lor (cpu.adl - 256)
+         else ((cpu.adh lsl 8) lor cpu.adl) + 1
+       in
+       let address = pc in
+       Printf.printf
+         "Page crossed %b next_cycle=%d cpu.pc=%04X - adh %X adl %X data=%02X\n"
+         page_crossed
+         next_cycle
+         address
+         cpu.adh
+         cpu.adl
+         bus.data;
+       next_cycle, { cpu with pc }, { pins with rw; sync }, { bus with address }
+     | 4 ->
+       let rw = true in
+       let sync = true in
+       ( 0
+       , { cpu with pc = cpu.pc + 1 }
+       , { pins with rw; sync }
+       , { bus with address = cpu.pc + 1 } )
      | _ -> failwith "op cycle too large")
   | _ -> failwith "Addressing Not implemented"
 ;;
