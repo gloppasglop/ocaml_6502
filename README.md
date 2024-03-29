@@ -1,7 +1,7 @@
 
 # OCaml 6502
 
-A tentative to write a 6502 emulator in Ocaml and eventially a c64 emulator
+A tentative to write a 6502 emulator in Ocaml and eventually a c64 emulator
 
 ## References
 
