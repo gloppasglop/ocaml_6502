@@ -1,5 +1,5 @@
 (executable
  (public_name ocaml_6502)
  (name main)
- (modules main cpu)
+ (modules main cpu cia)
  (libraries stdio base raylib raygui ocaml_6502))
